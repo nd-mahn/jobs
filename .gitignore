@@ -136,3 +136,6 @@ Thumbs.db
 *.bak
 *.tmp
 *.orig
+/job-lyrics-sync/lyrics/
+/job-lyrics-sync/output_metadata/
+/job-producer-consumer-importer/files/
