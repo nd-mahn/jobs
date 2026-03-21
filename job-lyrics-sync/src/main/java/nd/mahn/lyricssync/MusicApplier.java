@@ -1,4 +1,4 @@
-package dev.m.music;
+package nd.mahn.lyricssync;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.ID3v24Tag;

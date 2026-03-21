@@ -1,4 +1,4 @@
-package dev.m.music;
+package nd.mahn.lyricssync;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

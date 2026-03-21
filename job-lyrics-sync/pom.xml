@@ -8,10 +8,10 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>job-common</artifactId>
+    <artifactId>job-lyrics-sync</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>job-common</name>
-    <description>job-common</description>
+    <name>job-lyrics-sync</name>
+    <description>job-lyrics-sync</description>
     <url/>
     <licenses>
         <license/>
@@ -40,6 +40,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -48,4 +49,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

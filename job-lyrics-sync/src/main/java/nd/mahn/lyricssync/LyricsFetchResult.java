@@ -1,4 +1,4 @@
-package dev.m.music;
+package nd.mahn.lyricssync;
 
 import org.jsoup.nodes.Document;
 
