@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "job.lyrics")
 public class LyricsProperties {
     private String pathScanner;
+    private String pathBackup;
     private String outputMetaData;
 }
 

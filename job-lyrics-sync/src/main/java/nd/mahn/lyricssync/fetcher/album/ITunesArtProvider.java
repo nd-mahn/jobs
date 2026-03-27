@@ -21,7 +21,6 @@ public class ITunesArtProvider implements AlbumArtProvider {
             log.info("[art OK] {} ← artist='{}' title='{}'", "iTunes", artist, title);
             return result;
         }
-        log.warn("  [art] Không tìm được: {}", title);
         return new byte[0];
     }
 

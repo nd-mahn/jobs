@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: job-producer-consumer-importer
+  datasource:
+    url: ${DB_URL:jdbc:oracle:thin:@//localhost:1521/xe}
+    username: ${DB_USER:system}
+    password: ${DB_PASS:password}
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 30000
+
+file.path: job-producer-consumer-importer/files/main/MNP_ISDN_20250621064759.txt
+queue.size: 10
+
+sql:
+  # C?u trúc b?ng chính MNP
+  create-mnp: >
+    CREATE TABLE MNP (
+      MOBILE              VARCHAR2(20) PRIMARY KEY,
+      NET_OPERATOR_FROM   VARCHAR2(50),
+      OUT_NET_DATE        VARCHAR2(50),
+      NET_OPERATOR_TO_ID  VARCHAR2(50),
+      BLOCK_HOLDER        VARCHAR2(50),
+      IN_NET_DATE         VARCHAR2(50),
+      STATUS              VARCHAR2(20),
+      INDEX_ORDER         VARCHAR2(20),
+      UPDATED_TIME        DATE DEFAULT SYSDATE
+    )
+
+  # C?u trúc b?ng t?m MNP_TEMP (?? batch insert tr??c khi merge)
+  create-temp: >
+    CREATE TABLE MNP_TEMP (
+      NET_OPERATOR_FROM   VARCHAR2(50),
+      OUT_NET_DATE        VARCHAR2(50),
+      NET_OPERATOR_TO_ID  VARCHAR2(50),
+      MOBILE              VARCHAR2(20),
+      BLOCK_HOLDER        VARCHAR2(50),
+      IN_NET_DATE         VARCHAR2(50),
+      STATUS              VARCHAR2(20),
+      INDEX_ORDER         VARCHAR2(20)
+    )
+
+  # Câu l?nh Insert vào b?ng t?m (theo ?úng th? t? các field trong MnpDto)
+  insert-temp: >
+    INSERT INTO MNP_TEMP (
+      NET_OPERATOR_FROM, OUT_NET_DATE, NET_OPERATOR_TO_ID, MOBILE, 
+      BLOCK_HOLDER, IN_NET_DATE, STATUS, INDEX_ORDER
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+
+  # Câu l?nh Merge t? b?ng t?m vào b?ng chính
+  merge: >
+    MERGE INTO MNP TARGET
+    USING MNP_TEMP SOURCE
+    ON (TARGET.MOBILE = SOURCE.MOBILE)
+    WHEN MATCHED THEN
+      UPDATE SET 
+        TARGET.NET_OPERATOR_FROM  = SOURCE.NET_OPERATOR_FROM,
+        TARGET.OUT_NET_DATE       = SOURCE.OUT_NET_DATE,
+        TARGET.NET_OPERATOR_TO_ID = SOURCE.NET_OPERATOR_TO_ID,
+        TARGET.BLOCK_HOLDER       = SOURCE.BLOCK_HOLDER,
+        TARGET.IN_NET_DATE        = SOURCE.IN_NET_DATE,
+        TARGET.STATUS             = SOURCE.STATUS,
+        TARGET.INDEX_ORDER        = SOURCE.INDEX_ORDER,
+        TARGET.UPDATED_TIME       = SYSDATE
+    WHEN NOT MATCHED THEN
+      INSERT (
+        MOBILE, NET_OPERATOR_FROM, OUT_NET_DATE, NET_OPERATOR_TO_ID, 
+        BLOCK_HOLDER, IN_NET_DATE, STATUS, INDEX_ORDER, UPDATED_TIME
+      )
+      VALUES (
+        SOURCE.MOBILE, SOURCE.NET_OPERATOR_FROM, SOURCE.OUT_NET_DATE, SOURCE.NET_OPERATOR_TO_ID, 
+        SOURCE.BLOCK_HOLDER, SOURCE.IN_NET_DATE, SOURCE.STATUS, SOURCE.INDEX_ORDER, SYSDATE
+      )
+
+  truncate: TRUNCATE TABLE MNP_TEMP

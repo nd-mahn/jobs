@@ -6,4 +6,5 @@ import lombok.Data;
 public class ApplyResult {
     private String summary;
     private String error;
+    private String folder;
 }

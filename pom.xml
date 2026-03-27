@@ -31,6 +31,7 @@
         <module>job-common</module>
         <module>job-core</module>
         <module>job-lyrics-sync</module>
+        <module>job-producer-consumer-importer</module>
     </modules>
     <dependencyManagement>
         <dependencies>

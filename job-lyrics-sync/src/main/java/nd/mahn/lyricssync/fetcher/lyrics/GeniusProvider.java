@@ -22,16 +22,21 @@ public class GeniusProvider extends BaseLyricsProvider {
 
     @Override
     protected LyricsFetchResult fetchInternal(String artist, String title) throws Exception {
-        String q = StringUtils.encode(StringUtils.nullToEmpty(title) + " " + StringUtils.nullToEmpty(artist));
-        String url = "https://genius.com/search?q=" + q;
-        Document searchDoc = htmlParser.doc(url);
-        Element songLink = searchDoc.selectFirst("a.mini_card[href*='/lyrics']");
-        if (songLink == null) songLink = searchDoc.selectFirst("a[href*='-lyrics']");
-        if (songLink == null) return null;
-        Document songDoc = htmlParser.doc(songLink.absUrl("href"));
-        StringBuilder sb = new StringBuilder();
-        for (Element c : songDoc.select("div[data-lyrics-container=true]"))
-            sb.append(StringUtils.cleanHtml(c.html())).append("\n");
-        return new LyricsFetchResult(sb.toString().trim(), songDoc, getName());
+        try {
+            String q = StringUtils.encode(StringUtils.nullToEmpty(title) + " " + StringUtils.nullToEmpty(artist));
+            String url = "https://genius.com/search?q=" + q;
+            Document searchDoc = htmlParser.doc(url);
+            Element songLink = searchDoc.selectFirst("a.mini_card[href*='/lyrics']");
+            if (songLink == null) songLink = searchDoc.selectFirst("a[href*='-lyrics']");
+            if (songLink == null) return null;
+            Document songDoc = htmlParser.doc(songLink.absUrl("href"));
+            StringBuilder sb = new StringBuilder();
+            for (Element c : songDoc.select("div[data-lyrics-container=true]"))
+                sb.append(StringUtils.cleanHtml(c.html())).append("\n");
+            return new LyricsFetchResult(sb.toString().trim(), songDoc, getName());
+        } catch (Exception e) {
+            log.error("Exception artist, title not found {}", e.getMessage());
+            return new LyricsFetchResult("", null, "none");
+        }
     }
 }

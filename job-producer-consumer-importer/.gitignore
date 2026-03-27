@@ -30,6 +30,4 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
-/lyrics/
-/output_metadata/
+/files/main/MNP_ISDN_20250621064759.txt.done

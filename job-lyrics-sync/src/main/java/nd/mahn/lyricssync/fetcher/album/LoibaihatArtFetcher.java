@@ -23,7 +23,6 @@ public class LoibaihatArtFetcher implements AlbumArtProvider {
             log.info("[art OK] {} ← artist='{}' title='{}'", lyricsResult.getSource(), artist, title);
             return result;
         }
-        log.warn("  [art] Không tìm được: {}", title);
         return new byte[0];
     }
 
